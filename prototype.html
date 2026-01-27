@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html class="light" lang="nl">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Odido Content Recycler - Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#664ce6",
+                        "background-light": "#F0E8F8",
+                        "background-dark": "#141121",
+                        "header-start": "#7B68EE",
+                        "header-end": "#9370DB",
+                        "nav-blue": "#3366FF",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1e1b2e",
+                        "text-main": "#121117",
+                        "text-secondary": "#6a6487",
+                        "purple-start": "#7B68EE",
+                        "purple-end": "#9370DB",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "1rem", "lg": "1.5rem", "xl": "2rem", "2xl": "2.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    <style>
+        * { box-sizing: border-box; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100%; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .glass-bar { background: rgba(255, 255, 255, 0.2); }
+
+        /* Simple screen switching */
+        .screen { display: none; }
+        .screen.active { display: block; }
+    </style>
+</head>
+<body class="font-display text-[#121117]">
+
+<!-- ==================== SCREEN 1: HOME ==================== -->
+<div id="screen-home" class="screen active">
+    <div class="relative min-h-screen w-full max-w-md mx-auto bg-background-light shadow-2xl overflow-hidden">
+        <!-- Header Section with Gradient -->
+        <header class="relative bg-gradient-to-r from-header-start to-header-end pb-8 pt-12 px-6 rounded-b-[2.5rem] shadow-lg z-10">
+            <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 backdrop-blur-sm text-white">
+                        <span class="material-symbols-outlined" style="font-size: 24px;">recycling</span>
+                    </div>
+                    <div>
+                        <h1 class="text-white text-lg font-bold leading-tight tracking-tight">Odido Recycler</h1>
+                        <p class="text-white/80 text-xs font-medium">Welcome back, Sarah</p>
+                    </div>
+                </div>
+                <button class="relative h-10 w-10 overflow-hidden rounded-full border-2 border-white/30">
+                    <img alt="User Profile" class="h-full w-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYLyzHoX1wY25VE7452Qg7x1umZXuMFaZfgX_yO0mzNkPQXO6WZehG_Cu94pMLAJUVKri73ESeypp-Jy99_FgnYb_ECAxVYQTMy633KoG-bj4yuAdhJPx_2dN6IiQlNHu_7zx4PIZ9e-pnWUxB7exa50l7ZJvNiNcKCjPlgVm0lGLidLlE9-mSkpVK56PkXCa-AesgmS4FQEKq86tD0Z4AyeRF-fp-BnsJRO688VirEgvaz0_QBmhn2PC2x3VMQMLd3peGPkHkwAW6"/>
+                    <div class="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-400 border-2 border-header-end"></div>
+                </button>
+            </div>
+            <!-- Search Bar -->
+            <div class="relative z-20 -mb-14">
+                <div class="flex w-full items-center rounded-full bg-white p-2 shadow-[0_8px_20px_rgba(51,102,255,0.15)] h-14">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full text-nav-blue ml-1">
+                        <span class="material-symbols-outlined">search</span>
+                    </div>
+                    <input class="flex-1 bg-transparent border-none text-base font-medium placeholder:text-gray-400 focus:ring-0 focus:outline-none text-[#121117]" placeholder="Zoek in CopyDocs..." type="text"/>
+                    <button class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 text-gray-500 hover:bg-gray-100 transition-colors mr-1">
+                        <span class="material-symbols-outlined" style="font-size: 20px;">tune</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="pt-16 pb-24 px-6">
+            <!-- Quick Actions -->
+            <div class="flex gap-3 overflow-x-auto no-scrollbar pb-6 -mx-6 px-6">
+                <button class="flex items-center gap-2 whitespace-nowrap rounded-full bg-primary text-white px-5 py-2.5 text-sm font-bold shadow-md shadow-primary/20">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">auto_awesome</span>
+                    All
+                </button>
+                <button class="flex items-center gap-2 whitespace-nowrap rounded-full bg-white text-gray-600 px-5 py-2.5 text-sm font-bold shadow-sm">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">description</span>
+                    CopyDocs
+                </button>
+                <button class="flex items-center gap-2 whitespace-nowrap rounded-full bg-white text-gray-600 px-5 py-2.5 text-sm font-bold shadow-sm">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">campaign</span>
+                    Campaigns
+                </button>
+                <button class="flex items-center gap-2 whitespace-nowrap rounded-full bg-white text-gray-600 px-5 py-2.5 text-sm font-bold shadow-sm">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">rss_feed</span>
+                    Blogs
+                </button>
+            </div>
+
+            <!-- Section Header -->
+            <div class="flex items-center justify-between mb-4 mt-2">
+                <h2 class="text-[#121117] text-xl font-bold tracking-tight">Recente bronbestanden</h2>
+                <button class="text-nav-blue text-sm font-bold">Alles zien</button>
+            </div>
+
+            <!-- Cards -->
+            <div class="flex flex-col gap-4">
+                <!-- Card 1 -->
+                <div class="group relative flex flex-col gap-3 rounded-[2rem] bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex gap-4">
+                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-orange-50 text-orange-500">
+                                <span class="material-symbols-outlined" style="font-size: 32px;">description</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <h3 class="text-[#121117] text-base font-bold leading-tight mb-1">CopyDoc Glasvezel Q1</h3>
+                                <p class="text-gray-400 text-xs font-medium">Updated 2h ago</p>
+                            </div>
+                        </div>
+                        <button class="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-50">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between mt-1 pl-1">
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-600">CopyDoc</span>
+                            <span class="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-bold text-gray-500">Draft</span>
+                        </div>
+                        <button onclick="navigateTo('target')" class="flex items-center gap-1 text-nav-blue text-xs font-bold bg-blue-50 px-3 py-1.5 rounded-full hover:bg-blue-100 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">cached</span>
+                            Recycle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="group relative flex flex-col gap-3 rounded-[2rem] bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex gap-4">
+                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-purple-50 text-purple-500">
+                                <span class="material-symbols-outlined" style="font-size: 32px;">slideshow</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <h3 class="text-[#121117] text-base font-bold leading-tight mb-1">Sales Guide 5G Business</h3>
+                                <p class="text-gray-400 text-xs font-medium">Updated yesterday</p>
+                            </div>
+                        </div>
+                        <button class="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-50">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between mt-1 pl-1">
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center rounded-full bg-purple-50 px-2.5 py-1 text-xs font-bold text-purple-600">Internal</span>
+                        </div>
+                        <button onclick="navigateTo('target')" class="flex items-center gap-1 text-nav-blue text-xs font-bold bg-blue-50 px-3 py-1.5 rounded-full hover:bg-blue-100 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">cached</span>
+                            Recycle
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="group relative flex flex-col gap-3 rounded-[2rem] bg-white p-4 shadow-[0_4px_20px_rgba(0,0,0,0.03)] transition-transform hover:scale-[1.02] active:scale-[0.98]">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex gap-4">
+                            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-pink-50 text-pink-500">
+                                <span class="material-symbols-outlined" style="font-size: 32px;">campaign</span>
+                            </div>
+                            <div class="flex flex-col justify-center">
+                                <h3 class="text-[#121117] text-base font-bold leading-tight mb-1">Winter Campaign Socials</h3>
+                                <p class="text-gray-400 text-xs font-medium">Updated 3 days ago</p>
+                            </div>
+                        </div>
+                        <button class="flex h-8 w-8 items-center justify-center rounded-full text-gray-400 hover:bg-gray-50">
+                            <span class="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between mt-1 pl-1">
+                        <div class="flex gap-2">
+                            <span class="inline-flex items-center rounded-full bg-pink-50 px-2.5 py-1 text-xs font-bold text-pink-600">Social</span>
+                            <span class="inline-flex items-center rounded-full bg-green-50 px-2.5 py-1 text-xs font-bold text-green-600">Live</span>
+                        </div>
+                        <button onclick="navigateTo('target')" class="flex items-center gap-1 text-nav-blue text-xs font-bold bg-blue-50 px-3 py-1.5 rounded-full hover:bg-blue-100 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">cached</span>
+                            Recycle
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="h-20"></div>
+        </main>
+
+        <!-- FAB -->
+        <button onclick="navigateTo('target')" class="fixed bottom-24 right-6 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-[0_4px_14px_rgba(102,76,230,0.5)] transition-transform hover:scale-110 active:scale-95" style="max-width: 448px; right: calc(50% - 224px + 24px);">
+            <span class="material-symbols-outlined" style="font-size: 28px;">add</span>
+        </button>
+
+        <!-- Bottom Navigation -->
+        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/90 backdrop-blur-md pb-6 pt-2 px-6 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] border-t border-gray-100/50 z-20">
+            <div class="flex items-center justify-around">
+                <button class="flex flex-col items-center gap-1 p-2 text-primary">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+                    <span class="text-[10px] font-bold">Home</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-nav-blue transition-colors">
+                    <span class="material-symbols-outlined">history</span>
+                    <span class="text-[10px] font-medium">History</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-nav-blue transition-colors">
+                    <span class="material-symbols-outlined">folder_open</span>
+                    <span class="text-[10px] font-medium">Library</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 p-2 text-gray-400 hover:text-nav-blue transition-colors">
+                    <span class="material-symbols-outlined">settings</span>
+                    <span class="text-[10px] font-medium">Settings</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<!-- ==================== SCREEN 2: TARGET AUDIENCE SELECTION ==================== -->
+<div id="screen-target" class="screen">
+    <div class="min-h-screen w-full max-w-md mx-auto bg-[#f6f6f8]">
+        <!-- Top App Bar -->
+        <header class="fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-md bg-white/90 backdrop-blur-md border-b border-black/5">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button onclick="navigateTo('home')" class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full active:bg-black/5 transition-colors">
+                    <span class="material-symbols-outlined text-[#121117]" style="font-size: 24px;">arrow_back_ios_new</span>
+                </button>
+                <h1 class="text-[#121117] text-lg font-bold leading-tight flex-1 text-center pr-10">Kies doelgroepen</h1>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="pt-20 pb-32 px-4">
+            <!-- Source File Card -->
+            <section class="mb-8">
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center gap-4 flex-1">
+                            <div class="flex items-center justify-center h-12 w-12 rounded-lg bg-primary/10 text-primary">
+                                <span class="material-symbols-outlined text-2xl">description</span>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <p class="text-[#121117] text-base font-bold leading-tight">CopyDoc Glasvezel Q1</p>
+                                <p class="text-[#6a6487] text-xs font-medium uppercase tracking-wider">Bronbestand</p>
+                            </div>
+                        </div>
+                        <button class="text-[#6a6487] hover:text-primary transition-colors">
+                            <span class="material-symbols-outlined">edit</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Doelgroepen Section -->
+            <section class="mb-8">
+                <h2 class="text-[#121117] text-xl font-bold mb-4 px-1">Doelgroepen</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <!-- MKB Card (Selected) -->
+                    <button id="target-mkb" onclick="toggleTarget(this)" class="target-card selected relative flex flex-col p-3 pb-4 bg-white rounded-xl border-2 border-primary shadow-sm hover:shadow-md transition-all duration-200 text-left">
+                        <div class="check-indicator absolute top-2 right-2 h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-sm z-10">
+                            <span class="material-symbols-outlined text-white text-sm font-bold">check</span>
+                        </div>
+                        <div class="w-full aspect-[4/3] rounded-lg bg-[#f6f6f8] mb-3 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-90" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAyZMoEbMzLHwwPh86qd6BUTRMwgScQcWELm-i08yRrspCg8jVqPvSK6v8uQIGSbusISFFJPNZyue3_J23q-rt0pWtuAaHYFxDTSENjjeWB71uJhMdu8RcnFuAEqgG52SfGX7rqzDo42Y4lj4QTwGlclaANrPq-eFSZE2iLsFhYdBu1htWN5oloGrYwFqaIvL80rgLx68CU1u0f7c30xVO6YUF4W0qF2Lgild8QQ00uTwfrFRKvlhvtxIPRle2P_gUQJRMW0MqPj52f");'></div>
+                        </div>
+                        <div>
+                            <p class="text-[#121117] text-base font-bold">MKB</p>
+                            <p class="status-text text-primary text-xs font-medium mt-0.5">Geselecteerd</p>
+                        </div>
+                    </button>
+
+                    <!-- Large Enterprise Card (Selected) -->
+                    <button id="target-enterprise" onclick="toggleTarget(this)" class="target-card selected relative flex flex-col p-3 pb-4 bg-white rounded-xl border-2 border-primary shadow-sm hover:shadow-md transition-all duration-200 text-left">
+                        <div class="check-indicator absolute top-2 right-2 h-6 w-6 rounded-full bg-primary flex items-center justify-center shadow-sm z-10">
+                            <span class="material-symbols-outlined text-white text-sm font-bold">check</span>
+                        </div>
+                        <div class="w-full aspect-[4/3] rounded-lg bg-[#f6f6f8] mb-3 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-90" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCJOTT8D-j7yebWVUdk_DJPAWdxTn-wBtt0viYQFvo_x5cBVb12F9SUILi1yA8QIXSJORgyIrYRzx8GSaz8S_hgvbumhUhrttPU951DnkRBupKkPJR0GGrpgGTkcPSaLZGq9xofLtHRT3EGfr2rpSm-nUWnI5z04IkFP2VStLtkHmhaLTDZC4OpRqQ8JpWiKEQCej4_0SCBq4XcnVXVmw88x0Wlbs6gptVyvv2ZhCIor2Kloy8je8VO7ru3Z2XcuEOVN4i2vMCOPyzo");'></div>
+                        </div>
+                        <div>
+                            <p class="text-[#121117] text-base font-bold">Large Enterprise</p>
+                            <p class="status-text text-primary text-xs font-medium mt-0.5">Geselecteerd</p>
+                        </div>
+                    </button>
+
+                    <!-- Zorg Card -->
+                    <button id="target-zorg" onclick="toggleTarget(this)" class="target-card relative flex flex-col p-3 pb-4 bg-white rounded-xl border-2 border-transparent hover:border-gray-200 shadow-sm transition-all duration-200 text-left">
+                        <div class="check-indicator absolute top-2 right-2 h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center z-10"></div>
+                        <div class="w-full aspect-[4/3] rounded-lg bg-[#f6f6f8] mb-3 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-80" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuASgzSJmg6HFpI-zBsN2FPK4Bjw-9hYU69Lo44KmtGWetIAUJX9LYAXJct5cg6MjS7VfcNcN4I44tTjCDpd9fT1i_HtCtEkZaD8Kh397DyCJy_RS3lTA3Chwi6DgVbT3nysZHektAfYOLSDtHNTOmmRioShS2BnUEPJCikZhbEyIGIyRJpJymf_j8BeE17oA1w2kU1Q0j9UdmFzYjlTXKb8Wv4Ob0etqWxuPUupRI59pzPPUvC0J9XKjTQHAPXvot2z60zR9TndNX_i");'></div>
+                        </div>
+                        <div>
+                            <p class="text-[#121117] text-base font-bold">Zorg</p>
+                            <p class="status-text text-[#6a6487] text-xs font-normal mt-0.5">Niet actief</p>
+                        </div>
+                    </button>
+
+                    <!-- Retail Card -->
+                    <button id="target-retail" onclick="toggleTarget(this)" class="target-card relative flex flex-col p-3 pb-4 bg-white rounded-xl border-2 border-transparent hover:border-gray-200 shadow-sm transition-all duration-200 text-left">
+                        <div class="check-indicator absolute top-2 right-2 h-6 w-6 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center z-10"></div>
+                        <div class="w-full aspect-[4/3] rounded-lg bg-[#f6f6f8] mb-3 overflow-hidden relative">
+                            <div class="absolute inset-0 bg-cover bg-center opacity-80" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDcSIYEMIWRTfJVCCc_sBnXzpXQ9Ih-L8UMd62CGkCOJJfuKv9befT5Kw2PpZiObdyacx6nGsgqa7TQISrI2O9hc8cjnjBEOdkdNnGfEcKRV8MDIbz3t2n1c0bhu4ZAH_eLfhUdfOhbo3dOvZPW4LI-Gjjrsf5mBk0wC4PEBBWZAbbXAtMj0mGcDRkmTdYBuLluJi6y4qK3IcXHKns4qlapPIrr6gPWkWoUOpb0qq0KmihVdZnMNPaqLi13_Fgrwc5tKGIyoE2cHnH2");'></div>
+                        </div>
+                        <div>
+                            <p class="text-[#121117] text-base font-bold">Retail</p>
+                            <p class="status-text text-[#6a6487] text-xs font-normal mt-0.5">Niet actief</p>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Kanalen Section -->
+            <section class="mb-4">
+                <h2 class="text-[#121117] text-xl font-bold mb-4 px-1">Kanalen</h2>
+                <div class="bg-white rounded-xl p-2 shadow-sm">
+                    <!-- Website -->
+                    <div class="flex items-center justify-between p-3 border-b border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">language</span>
+                            </div>
+                            <span class="text-[#121117] font-medium">Website</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input checked type="checkbox" class="sr-only peer"/>
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <!-- Nieuwsbrief -->
+                    <div class="flex items-center justify-between p-3 border-b border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">mail</span>
+                            </div>
+                            <span class="text-[#121117] font-medium">Nieuwsbrief</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input checked type="checkbox" class="sr-only peer"/>
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <!-- Social Media -->
+                    <div class="flex items-center justify-between p-3 border-b border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-pink-50 text-pink-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">share</span>
+                            </div>
+                            <span class="text-[#121117] font-medium">Social Media</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer"/>
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    <!-- Sales Deck -->
+                    <div class="flex items-center justify-between p-3">
+                        <div class="flex items-center gap-3">
+                            <div class="h-10 w-10 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">slideshow</span>
+                            </div>
+                            <span class="text-[#121117] font-medium">Sales Deck</span>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" class="sr-only peer"/>
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer Button -->
+        <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 p-4 bg-gradient-to-t from-[#f6f6f8] via-[#f6f6f8] to-transparent pb-8">
+            <button onclick="startGeneration()" class="w-full bg-[#121117] text-white font-bold text-lg py-4 rounded-full shadow-lg hover:scale-[1.02] active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined">auto_awesome</span>
+                Genereer content
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SCREEN 3: GENERATION PROGRESS ==================== -->
+<div id="screen-progress" class="screen">
+    <div class="min-h-screen w-full flex flex-col bg-gradient-to-br from-[#7B68EE] via-[#664ce6] to-[#9370DB] overflow-hidden">
+        <!-- Decorative Background -->
+        <div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+            <div class="absolute -top-20 -right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/3 -left-20 w-72 h-72 bg-purple-500/30 rounded-full blur-3xl"></div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="relative z-10 flex flex-1 flex-col items-center justify-center w-full px-6 py-8 max-w-md mx-auto">
+            <!-- Robot Illustration -->
+            <div class="w-full flex justify-center mb-10 animate-bounce" style="animation-duration: 3s;">
+                <div class="w-64 h-64 bg-contain bg-center bg-no-repeat drop-shadow-2xl" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCiGPuoA107qs-BuPe4lYztPMEn9rG_zj_jr7Qd6o3actW5yEH_niQcWloXddXY876AgvDg9eaxy3VrArEAEmH0GgxCr5Xxr2wqoc0Y1Ri0OHOGTe69-gi7-nw74lxLJDGQMD-R7ZuaYZXpPU-y6XA48Y6OOAQgXnOShKYaJmk_8H1cwDCI8YIOCsXwkTXuvEXkVEB7mqxD63KiHXT3EO_SuXFZzIYUH1kT3t8XuV0YkW5s3SM2e7_xJU4aXUGRyUbQgQnkO8O5GneT');"></div>
+            </div>
+
+            <!-- Headline -->
+            <h1 class="text-white tracking-tight text-[28px] font-bold leading-tight text-center mb-8 drop-shadow-md">
+                Content wordt gegenereerd...
+            </h1>
+
+            <!-- Progress Bar -->
+            <div class="w-full mb-10">
+                <div class="flex justify-between mb-2 px-1">
+                    <span class="text-white/80 text-sm font-medium">Bezig met verwerken</span>
+                    <span id="progress-percent" class="text-white font-bold text-sm">0%</span>
+                </div>
+                <div class="w-full h-4 glass-bar rounded-full overflow-hidden backdrop-blur-sm border border-white/10">
+                    <div id="progress-bar" class="h-full bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-500" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <!-- Activity Stream -->
+            <div id="activity-stream" class="w-full flex flex-col gap-3">
+                <!-- Items will be added dynamically -->
+            </div>
+        </div>
+
+        <!-- Footer Action -->
+        <div class="relative z-10 w-full p-6 pb-10 max-w-md mx-auto">
+            <button onclick="cancelGeneration()" class="w-full h-14 flex items-center justify-center gap-2 rounded-full border-2 border-white/30 hover:border-white hover:bg-white/10 active:scale-95 transition-all duration-200">
+                <span class="material-symbols-outlined text-white">close</span>
+                <span class="text-white font-bold text-base tracking-wide">Annuleren</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ==================== SCREEN 4: GENERATED CONTENT RESULTS ==================== -->
+<div id="screen-results" class="screen">
+    <div class="min-h-screen w-full max-w-md mx-auto bg-[#f6f6f8]">
+        <!-- Top App Bar -->
+        <header class="fixed top-0 left-1/2 -translate-x-1/2 z-50 w-full max-w-md bg-[#f6f6f8]/95 backdrop-blur-sm pt-4 pb-2 px-4 flex items-center justify-between border-b border-gray-100">
+            <button onclick="navigateTo('home')" class="w-12 flex justify-start">
+                <span class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors">
+                    <span class="material-symbols-outlined text-[#121117]" style="font-size: 24px;">arrow_back_ios_new</span>
+                </span>
+            </button>
+            <h1 class="text-xl font-extrabold text-center tracking-tight text-[#121117]">
+                Gegenereerde content
+            </h1>
+            <div class="w-12 flex justify-end">
+                <button class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-black/5 transition-colors">
+                    <span class="material-symbols-outlined text-[#121117]" style="font-size: 24px;">share</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="pt-20 pb-32 flex flex-col gap-6">
+            <!-- Filter Chips -->
+            <section class="w-full overflow-x-auto no-scrollbar px-4">
+                <div class="flex gap-3 min-w-max">
+                    <button class="h-10 px-6 rounded-full bg-primary text-white text-sm font-bold shadow-md shadow-primary/20 transition-transform active:scale-95">Alle</button>
+                    <button class="h-10 px-6 rounded-full bg-white text-[#121117] text-sm font-semibold hover:bg-gray-50 transition-colors">MKB</button>
+                    <button class="h-10 px-6 rounded-full bg-white text-[#121117] text-sm font-semibold hover:bg-gray-50 transition-colors">Enterprise</button>
+                    <button class="h-10 px-6 rounded-full bg-white text-[#121117] text-sm font-semibold hover:bg-gray-50 transition-colors">Zorg</button>
+                </div>
+            </section>
+
+            <!-- Content Cards -->
+            <section class="flex flex-col gap-5 px-4">
+                <!-- Expanded Card -->
+                <article class="bg-white rounded-[2rem] p-5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 flex flex-col gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-[#E5E0FF] flex items-center justify-center shrink-0">
+                            <span class="material-symbols-outlined text-primary" style="font-size: 20px;">post</span>
+                        </div>
+                        <div class="flex-1">
+                            <h2 class="text-lg font-bold leading-tight">LinkedIn Post - MKB</h2>
+                            <p class="text-xs text-gray-500 font-medium">Gegenereerd 2 min geleden</p>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <p class="text-base text-gray-700 leading-relaxed">
+                            Ontdek de nieuwe mogelijkheden voor zakelijke connectiviteit die naadloos aansluiten bij uw groeiambities. Bij Odido begrijpen we dat connectiviteit de basis is van modern ondernemen. Daarom bieden wij schaalbare oplossingen die met u meegroeien.
+                        </p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="h-7 px-3 rounded-full bg-[#E8F7F0] flex items-center gap-1.5 w-fit">
+                            <span class="material-symbols-outlined text-[#009C5D]" style="font-size: 16px; font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span class="text-xs font-bold text-[#007A48]">Tone of voice: Odido</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 pt-2 overflow-x-auto no-scrollbar">
+                        <button class="flex-1 h-10 px-4 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center gap-2 hover:bg-[#533bc4] transition-colors min-w-[100px]">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+                            Bewerk
+                        </button>
+                        <button class="flex-1 h-10 px-4 rounded-full bg-transparent border border-gray-200 text-[#121117] text-sm font-bold flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors min-w-[100px]">
+                            <span class="material-symbols-outlined" style="font-size: 18px;">content_copy</span>
+                            Kopieer
+                        </button>
+                        <button class="w-10 h-10 rounded-full bg-transparent border border-gray-200 text-[#121117] flex items-center justify-center shrink-0 hover:bg-gray-50 transition-colors">
+                            <span class="material-symbols-outlined" style="font-size: 20px;">download</span>
+                        </button>
+                    </div>
+                </article>
+
+                <!-- Collapsed Card 1 -->
+                <article class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 flex flex-col gap-3 cursor-pointer hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex gap-3 items-start overflow-hidden">
+                            <div class="w-10 h-10 rounded-full bg-[#E5E0FF] flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 20px;">mail</span>
+                            </div>
+                            <div class="flex flex-col gap-1 min-w-0">
+                                <h2 class="text-lg font-bold leading-tight truncate">Nieuwsbrief Intro</h2>
+                                <p class="text-sm text-gray-500 leading-normal line-clamp-2">
+                                    Blijf voorop lopen in de markt met onze nieuwste inzichten over 5G-implementatie voor de zorgsector...
+                                </p>
+                            </div>
+                        </div>
+                        <div class="shrink-0 pt-1">
+                            <span class="material-symbols-outlined text-gray-400 hover:text-primary transition-colors">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center mt-1">
+                        <div class="h-6 px-2.5 rounded-full bg-[#F6F6F8] flex items-center gap-1.5 border border-gray-100">
+                            <span class="material-symbols-outlined text-[#009C5D]" style="font-size: 14px; font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span class="text-[10px] font-bold text-gray-600 uppercase tracking-wide">Odido Gevalideerd</span>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Collapsed Card 2 -->
+                <article class="bg-white rounded-[2rem] p-5 shadow-sm border border-gray-100 flex flex-col gap-3 cursor-pointer hover:shadow-md transition-shadow">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex gap-3 items-start overflow-hidden">
+                            <div class="w-10 h-10 rounded-full bg-[#E5E0FF] flex items-center justify-center shrink-0">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 20px;">campaign</span>
+                            </div>
+                            <div class="flex flex-col gap-1 min-w-0">
+                                <h2 class="text-lg font-bold leading-tight truncate">Google Ads Kop - Enterprise</h2>
+                                <p class="text-sm text-gray-500 leading-normal line-clamp-2">
+                                    Maximale snelheid, minimale downtime. Kies voor Odido Enterprise glasvezel...
+                                </p>
+                            </div>
+                        </div>
+                        <div class="shrink-0 pt-1">
+                            <span class="material-symbols-outlined text-gray-400 hover:text-primary transition-colors">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center mt-1">
+                        <div class="h-6 px-2.5 rounded-full bg-[#F6F6F8] flex items-center gap-1.5 border border-gray-100">
+                            <span class="material-symbols-outlined text-[#009C5D]" style="font-size: 14px; font-variation-settings: 'FILL' 1;">check_circle</span>
+                            <span class="text-[10px] font-bold text-gray-600 uppercase tracking-wide">Odido Gevalideerd</span>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+
+        <!-- Floating Action Button -->
+        <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-md px-4 z-40 flex justify-end pointer-events-none">
+            <button class="pointer-events-auto shadow-2xl bg-[#121117] text-white h-14 pl-6 pr-6 rounded-full flex items-center gap-3 hover:scale-[1.02] active:scale-95 transition-all duration-200">
+                <span class="text-sm font-bold tracking-wide">Alles exporteren naar Bynder</span>
+                <span class="material-symbols-outlined" style="font-size: 20px;">cloud_upload</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Navigation function
+    function navigateTo(screen) {
+        // Hide all screens
+        document.querySelectorAll('.screen').forEach(s => {
+            s.classList.remove('active');
+        });
+
+        // Show target screen
+        const targetScreen = document.getElementById('screen-' + screen);
+        if (targetScreen) {
+            targetScreen.classList.add('active');
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    }
+
+    // Toggle target audience selection
+    function toggleTarget(element) {
+        const isSelected = element.classList.contains('selected');
+        const checkIndicator = element.querySelector('.check-indicator');
+        const statusText = element.querySelector('.status-text');
+
+        if (isSelected) {
+            element.classList.remove('selected');
+            element.classList.remove('border-primary');
+            element.classList.add('border-transparent');
+            checkIndicator.innerHTML = '';
+            checkIndicator.classList.remove('bg-primary');
+            checkIndicator.classList.add('bg-gray-100', 'border', 'border-gray-200');
+            statusText.textContent = 'Niet actief';
+            statusText.classList.remove('text-primary', 'font-medium');
+            statusText.classList.add('text-[#6a6487]', 'font-normal');
+        } else {
+            element.classList.add('selected');
+            element.classList.add('border-primary');
+            element.classList.remove('border-transparent');
+            checkIndicator.innerHTML = '<span class="material-symbols-outlined text-white text-sm font-bold">check</span>';
+            checkIndicator.classList.add('bg-primary');
+            checkIndicator.classList.remove('bg-gray-100', 'border', 'border-gray-200');
+            statusText.textContent = 'Geselecteerd';
+            statusText.classList.add('text-primary', 'font-medium');
+            statusText.classList.remove('text-[#6a6487]', 'font-normal');
+        }
+    }
+
+    // Generation progress simulation
+    let generationInterval;
+
+    const generationSteps = [
+        { progress: 20, text: 'Bronbestand analyseren...', completed: false },
+        { progress: 40, text: 'MKB versie aangemaakt', completed: true },
+        { progress: 60, text: 'LinkedIn post gegenereerd', completed: true },
+        { progress: 80, text: 'Instagram caption schrijven...', completed: false },
+        { progress: 100, text: 'Content generatie voltooid!', completed: true }
+    ];
+
+    function startGeneration() {
+        navigateTo('progress');
+
+        const progressBar = document.getElementById('progress-bar');
+        const progressPercent = document.getElementById('progress-percent');
+        const activityStream = document.getElementById('activity-stream');
+
+        // Clear previous activity
+        activityStream.innerHTML = '';
+        progressBar.style.width = '0%';
+        progressPercent.textContent = '0%';
+
+        let stepIndex = 0;
+
+        generationInterval = setInterval(() => {
+            if (stepIndex < generationSteps.length) {
+                const step = generationSteps[stepIndex];
+
+                progressBar.style.width = step.progress + '%';
+                progressPercent.textContent = step.progress + '%';
+
+                // Add activity item
+                const activityItem = document.createElement('div');
+
+                if (step.completed) {
+                    activityItem.className = 'glass-card rounded-xl p-4 flex items-center justify-between shadow-lg';
+                    activityItem.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center h-8 w-8 rounded-full bg-green-100 text-green-600">
+                                <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                            </div>
+                            <span class="text-slate-900 font-medium text-sm">${step.text}</span>
+                        </div>
+                    `;
+                } else {
+                    activityItem.className = 'bg-white/10 border border-white/20 rounded-xl p-4 flex items-center justify-between shadow-sm';
+                    activityItem.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <div class="flex items-center justify-center h-8 w-8 rounded-full bg-white/20 text-white animate-pulse">
+                                <span class="material-symbols-outlined text-[20px]">edit_note</span>
+                            </div>
+                            <span class="text-white font-medium text-sm">${step.text}</span>
+                        </div>
+                        <div class="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin"></div>
+                    `;
+                }
+
+                activityStream.appendChild(activityItem);
+                stepIndex++;
+
+                // If completed, navigate to results
+                if (step.progress >= 100) {
+                    clearInterval(generationInterval);
+                    setTimeout(() => {
+                        navigateTo('results');
+                    }, 1500);
+                }
+            }
+        }, 1200);
+    }
+
+    function cancelGeneration() {
+        clearInterval(generationInterval);
+        navigateTo('home');
+    }
+</script>
+
+</body>
+</html>
